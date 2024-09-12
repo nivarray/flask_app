@@ -12,7 +12,7 @@ main_bp = Blueprint('main', __name__)
 def index():
     db = get_db()
     # Gets the table names from the SQLite database
-    table_names = [row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table';").fetchall()]
+    table_names = [row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table';").fetchall()]  # index.html uses this variable
     return render_template('index.html', table_names=table_names)
 
 
