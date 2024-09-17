@@ -4,7 +4,7 @@ Contains functions to get and close the DB connection
 """
 import sqlite3
 from flask import g
-# ASK CHATGPT WHAT g IS AGAIN!!!!!!!!
+############## ASK CHATGPT WHAT g IS AGAIN!!!!!!!!
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect('instance/app.db')
