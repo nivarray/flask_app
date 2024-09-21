@@ -1,7 +1,7 @@
 """
 Contains routes and handles HTTP requests
 Retrieves data from DB, passes to the templates
-###################ASK CHATGPT TO EXPLAIN THE FOLLOWING: line 16, line 25, lines 29-34##############
+###################this has been reviewed by me, go on to index.html!##############
 """
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from .db import get_db
@@ -31,4 +31,6 @@ def fetch_data():
     selected_pollen = request.json.get('pollen_name')
     db = get_db()
     rows = db.execute('SELECT * FROM pollens WHERE name = ?', (selected_pollen,)).fetchall()
-    return jsonify([dict(row) for row in rows]) 
+    return jsonify([dict(row) for row in rows])  
+# row needs to be cast as dict because jsonify can't handle the sqlite3.Row object 
+# (which is dictionary-like but not a dict)
