@@ -27,7 +27,7 @@ def index():
 #     # rows = db.execute(f'SELECT * FROM {selected_pollen}').fetchall()
 #     return render_template('results.html', rows=rows)
 
-
+"""gets data from the DB and returns it as a json format"""
 @main_bp.route('/fetch_data', methods=['POST'])
 def fetch_data():
     selected_pollen = request.json.get('pollen_name')
