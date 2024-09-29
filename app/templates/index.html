@@ -9,7 +9,7 @@
     <h1>Select Pollen Type</h1>
     <form id="queryForm" onsubmit="fetchData(event)">
         <label for="pollen_name">Choose a pollen:</label>
-        <select name="pollen_name" id="pollen_name">
+        <select name="pollen_name" id="pollen_name"> <!-- Creates the dropdown-->
         <!-- Responsible for the listed names in the dropdown -->
             {% for pollen in pollen_names %}
             <option value="{{ pollen }}">{{ pollen }}</option>
