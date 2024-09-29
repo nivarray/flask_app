@@ -28,7 +28,7 @@ def index():
 #     return render_template('results.html', rows=rows)
 
 """gets data from the DB and returns it as a json format"""
-@main_bp.route('/fetch_data', methods=['POST'])
+@main_bp.route('/fetch_data', methods=['GET','POST'])
 def fetch_data():
     selected_pollen = request.json.get('pollen_name')
     print(f"Selected pollen: {selected_pollen}")  # Log the selected pollen
