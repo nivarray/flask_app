@@ -33,6 +33,9 @@ def fetch_data():
     selected_pollen = request.json.get('pollen_name')
     print(f"Selected pollen: {selected_pollen}")  # Log the selected pollen
     db = get_db()
+    if db is None:
+        return jsonify({"error": "Database connection failed"}), 500
+    
     rows = db.execute('SELECT * FROM pollens WHERE name = ?', (selected_pollen,)).fetchall()
     print(f"Fetched rows: {rows}")  # Log fetched rows
     return jsonify([dict(row) for row in rows])  
