@@ -7,6 +7,7 @@ from flask import g
 # g is a global request context, stores data temporarily
 # for the duration of the request. perfect for db connections.
 def get_db():
+    # try except handles db connection error
     try:
         if 'db' not in g:
             g.db = sqlite3.connect('instance/app.db')
