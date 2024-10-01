@@ -12,6 +12,7 @@ def get_db():
         g.db.row_factory = sqlite3.Row  # ensures that results are returned as a dictionary-like object, where you can access columns by name.
     return g.db
 
+#prevents potential resource leaks
 def close_db(e=None):
     db = g.pop('db', None)
 
