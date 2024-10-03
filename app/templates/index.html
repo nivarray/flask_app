@@ -10,46 +10,64 @@
     <h1>Select Pollen Type</h1>
     <form id="queryForm" onsubmit="fetchData(event)">
         <label for="pollen_name">Choose a pollen:</label>
-        <select name="pollen_name" id="pollen_name"> <!-- Creates the dropdown-->
-        <!-- Responsible for the listed names in the dropdown -->
+        <select name="pollen_name" id="pollen_name"> 
             {% for pollen in pollen_names %}
             <option value="{{ pollen }}">{{ pollen }}</option>
             {% endfor %}
         </select>
-        <button type="submit" id="fetchData">Fetch Data</button>
+        <button type="submit" id="fetchData" onclick="fetchData(event)">Fetch Data</button>
+        <!-- <button type="button" id="joinData">Fetch Joined Tables Data</button> -->
     </form>
-
+<!-- remove the form tag and use javascript instead to create this drop down.
+ use the example Joiner provided from https://davidjoiner.net/~djoiner/TEST/test.html
+ Use JS instead of HTML
+DOM get element by id -->
     <div id="dataContainer"></div>
 
     <script>
         async function fetchData(event) {
-            console.log(event);
+            console.log('Fetching data...'); // Log when the function is called
             event.preventDefault(); 
              
             const form = document.getElementById('queryForm');
             const formData = new FormData(form);
+            const pollenName = formData.get('pollen_name');
 
-            const response = await fetch('{{ url_for("main.fetch_data") }}', {
-                method: 'POST',
-                body: JSON.stringify({
-                    pollen_name: formData.get('pollen_name')
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
+            console.log(`Selected pollen: ${pollenName}`); // Log the selected pollen
+
+            try {
+                const response = await fetch('{{ url_for("main.fetch_data") }}', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        pollen_name: pollenName
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                // Check if the response is OK (status in the range 200-299)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            });
 
+                const data = await response.json();
+                console.log('Response data:', data); // Log the response data
+                const resultsDiv = document.getElementById('dataContainer');
 
-            const data = await response.json();
-            console.log(data);
-            const resultsDiv = document.getElementById('dataContainer');
+                if (!data || data.length === 0) {
+                    resultsDiv.innerHTML = '<h1>No results found</h1>';
+                    return; // Exit the function early
+                }
 
-
-            if (!data || data.length === 0) {
-                resultsDiv.innerHTML = '<h1>No results found</h1>';
-                return; // Exit the function early
+                resultsDiv.innerHTML = '<h1>Query Results</h1><table><thead><tr>' + 
+                Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
+                '</tr></thead><tbody>' + 
+                data.map(row => '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>').join('') +
+                '</tbody></table>';
+            } catch (error) {
+                console.error('Fetch error:', error); // Log any errors
             }
-            resultsDiv.innerHTML = '<h1>Query Results</h1><table><thead><tr>' + Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + '</tr></thead><tbody>' + data.map(row => '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>').join('') +'</tbody></table>';
         }
     </script>
 </body>
