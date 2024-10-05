@@ -29,7 +29,7 @@ def fetch_data():
     if db is None:
         return jsonify({"error": "Database connection failed"}), 500
     
-    rows = db.execute('SELECT * FROM related_data WHERE name = ?', (selected_pollen,)).fetchall()
+    rows = db.execute('SELECT * FROM pollens WHERE name = ?', (selected_pollen,)).fetchall()
     print(f"Fetched rows: {rows}")  # Log fetched rows
     return jsonify([dict(row) for row in rows])  
 # row needs to be cast as dict because jsonify can't handle the sqlite3.Row object 
@@ -39,7 +39,7 @@ def fetch_data():
 
 """Create the next function to join first and second table"""
 """Still need to create the JS function in index.html to display this"""
-main_bp.route("/get_related_data", methods=["POST"])
+@main_bp.route("/get_related_data", methods=['GET', 'POST'])
 def get_related_data_join():
     selected_pollen = request.json.get('pollen_name')
     db = get_db()
