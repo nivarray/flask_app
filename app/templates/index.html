@@ -25,6 +25,7 @@ DOM get element by id -->
     <div id="dataContainer"></div>
 
     <script>
+        // First button
         document.addEventListener('DOMContentLoaded', () => {
             const pollenDropdown = document.getElementById('pollen_name');
             const fetchDataBtn = document.getElementById('fetchDataBtn');
@@ -70,7 +71,8 @@ DOM get element by id -->
                     console.error('Fetch error:', error); // Log any errors
                 }
             });
-
+            
+            // Second button
             fetchJoinDataBtn.addEventListener('click', async (event) => {
                 event.preventDefault(); // Prevent any default behavior
                 
