@@ -17,6 +17,7 @@
         </select>
         <button id="fetchDataBtn">Fetch Data</button>
         <button id="joinDataBtn">Fetch Joined Tables Data</button>
+
     <!-- </form> -->
 <!-- remove the form tag and use javascript instead to create this drop down.
  use the example Joiner provided from https://davidjoiner.net/~djoiner/TEST/test.html
@@ -24,19 +25,30 @@
 DOM get element by id -->
     <div id="dataContainer"></div>
 
+    <!-- JSZip and FileSaver libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
     <script>
         // First button
         document.addEventListener('DOMContentLoaded', () => {
+            // All variables used
             const pollenDropdown = document.getElementById('pollen_name');
             const fetchDataBtn = document.getElementById('fetchDataBtn');
-            const fetchJoinDataBtn = document.getElementById('joinDataBtn')
+            const fetchJoinDataBtn = document.getElementById('joinDataBtn');
             const dataContainer = document.getElementById('dataContainer');
+            const createZipBtn = document.getElementById('createZipBtn')
+            const downloadZipBtn = document.getElementById('downloadZipBtn');
+            
+            // Hide download zip button
+            downloadZipBtn.style.display = 'none';
     
             fetchDataBtn.addEventListener('click', async (event) => {
                 event.preventDefault(); // Prevent any default behavior
                 
                 // Get the selected pollen name directly from the dropdown
                 const selectedPollen = pollenDropdown.value;
+                // Debugging purposes
                 console.log(`Selected pollen: ${selectedPollen}`);
                 
                 // Fetch data from the server
@@ -67,11 +79,15 @@ DOM get element by id -->
                     '</tr></thead><tbody>' + 
                     data.map(row => '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>').join('') +
                     '</tbody></table>';
+
+                    // Show the download zip button afte the data is rendered on the webpage
+                    downloadZipBtn.style.display = 'inline-block';
+
                 } catch (error) {
                     console.error('Fetch error:', error); // Log any errors
                 }
             });
-            
+
             // Second button
             fetchJoinDataBtn.addEventListener('click', async (event) => {
                 event.preventDefault(); // Prevent any default behavior
@@ -106,13 +122,33 @@ DOM get element by id -->
                     dataContainer.innerHTML = '<h1>Query Results</h1><table><thead><tr>' + 
                     Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
                     '</tr></thead><tbody>' + 
-                    data.map(row => '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>').join('') +
-                    '</tbody></table>';
+                    data.map(row => '<tr>' + 
+                        Object.values(row).map(item => `<td>${item}</td>`).join('') 
+                        + '</tr>').join('') +
+                        '</tbody></table>';
                 } catch (error) {
                     console.error('Fetch error:', error); // Log any errors
                 }
             });
+
+            // Handle Zip file download
+            // Gather the data based on user choice and have it ready for zip file download
+            // use a zip library
+            
+            downloadZipBtn.addEventListener('click', async() => {
+                const pollenData = data; // Contains the fetched data
+                
+                // Add image to ZIP file
+
+                // Add annotation data
+
+
+                // Generate the ZIP file and trigger the download
+                
+            });
         });
     </script>
+        <br><br>
+        <button id="downloadZipBtn">Create Zip File</button>    
 </body>
 </html>
