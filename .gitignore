@@ -2,3 +2,4 @@
 # ignore all .txt files
 *.txt
 _code_backup/
+venv/
