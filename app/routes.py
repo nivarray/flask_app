@@ -8,7 +8,7 @@ from .db import get_db
 main_bp = Blueprint('main', __name__)
 
 
-# Possibly change this function to get_pollen_name() or something like that
+# Alternative function name get_pollen_name()
 @main_bp.route('/')
 def index():
     db = get_db()  # Gets DB connection

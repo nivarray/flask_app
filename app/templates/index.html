@@ -36,7 +36,8 @@
             
             // Hide download zip button
             downloadZipBtn.style.display = 'none';
-    
+
+            // First button
             fetchDataBtn.addEventListener('click', async (event) => {
                 event.preventDefault(); // Prevent any default behavior
                 
@@ -74,7 +75,7 @@
                     data.map(row => '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>').join('') +
                     '</tbody></table>';
 
-                    // Show the download zip button afte the data is rendered on the webpage
+                    // Show the download zip button after the data is rendered on the webpage
                     downloadZipBtn.style.display = 'inline-block';
 
                 } catch (error) {
@@ -84,7 +85,8 @@
 
             // Second button
             fetchJoinDataBtn.addEventListener('click', async (event) => {
-                event.preventDefault(); // Prevent any default behavior
+                // Prevent any default behavior
+                event.preventDefault(); 
                 
                 // Get the selected pollen name directly from the dropdown
                 const selectedPollen = pollenDropdown.value;
