@@ -8,7 +8,6 @@
 </head>
 <body>
     <h1>Select Pollen Type</h1>
-    <!-- <form id="queryForm" onsubmit="fetchData(event)"> -->
         <label for="pollen_name">Choose a pollen:</label>
         <select name="pollen_name" id="pollen_name"> 
             {% for pollen in pollen_names %}
@@ -18,11 +17,6 @@
         <button id="fetchDataBtn">Fetch Data</button>
         <button id="joinDataBtn">Fetch Joined Tables Data</button>
 
-    <!-- </form> -->
-<!-- remove the form tag and use javascript instead to create this drop down.
- use the example Joiner provided from https://davidjoiner.net/~djoiner/TEST/test.html
- Use JS instead of HTML
-DOM get element by id -->
     <div id="dataContainer"></div>
 
     <!-- JSZip and FileSaver libraries -->

@@ -19,7 +19,7 @@ def create_app():
     @app.teardown_appcontext
     def teardown_db(exception):
         if exception:
-            print(f"Exception occured: {exception}")  # logs if something goes wrong
+            print(f"Exception occured: {exception}")  # Logs if something goes wrong
         close_db()
 
     # Initializes the DB from the schema.sql file
