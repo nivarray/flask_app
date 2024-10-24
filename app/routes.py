@@ -8,7 +8,7 @@ from .db import get_db
 main_bp = Blueprint('main', __name__)
 
 
-# Alternative function name get_pollen_name()
+# Alternative function name: get_pollen_name()
 @main_bp.route('/')
 def index():
     db = get_db()  # Gets DB connection
@@ -17,7 +17,7 @@ def index():
     return render_template('index.html', pollen_names=pollen_names)
 
 
-"""gets data from the DB and returns it as a json format"""
+"""Gets data from the DB and returns it as a json format"""
 """Keep things as small as possible, this function will be used to get the rows with the same name from the pollens table"""
 @main_bp.route('/fetch_data', methods=['GET','POST'])
 def fetch_data():
