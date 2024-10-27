@@ -25,3 +25,21 @@ img {
     height: auto; /* maintains aspect ratio */
     border: 2px solid black;
 }
+
+button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049; /* Darker green */
+}
+
+#dataContainer {
+    margin-top: 20px;
+}

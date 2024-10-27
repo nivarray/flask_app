@@ -14,8 +14,8 @@
             <option value="{{ pollen }}">{{ pollen }}</option>
             {% endfor %}
         </select>
-        <button id="fetchDataBtn">Fetch Data</button>
-        <button id="joinDataBtn">Fetch Joined Tables Data</button>
+        <button id="fetchDataBtn" aria-label="Fetch pollen data">Fetch Data</button>
+        <button id="joinDataBtn" aria-label="Fetch joined pollen data">Fetch Joined Tables Data</button>
 
     <div id="dataContainer"></div>
 
@@ -55,9 +55,9 @@
                         },
                         body: JSON.stringify({ pollen_name: selectedPollen }),
                     });
-    
+                    // Logs on the website if error occurs
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error(`<h1>HTTP error! status: ${response.statusText}</h1>`);
                     }
     
                     const data = await response.json();
@@ -102,8 +102,9 @@
                         body: JSON.stringify({ pollen_name: selectedPollen }),
                     });
     
+                    // Logs on the website if error occurs
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error(`<h1>HTTP error! status: ${response.statusText}</h1>`);
                     }
     
                     const data = await response.json();
