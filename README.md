@@ -15,7 +15,7 @@ The Pollen Annotation Viewer is a Flask web application that allows users to sif
 
 - **Backend**: Flask
 - **Database**: SQLite (For now)
-- **Frontend**: HTML, CSS, JavaScript (Bootstrap, jinja2)
+- **Frontend**: HTML, CSS, JavaScript (Bootstrap, jinja2, JSZip, FileSaver)
 - **Image Storage**: Local directory on PC
 
 ## Installation
