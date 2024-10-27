@@ -21,5 +21,23 @@ The Pollen Annotation Viewer is a Flask web application that allows users to sif
 ## Installation
 
 1. Clone this repository:
-   ```bash
-   git clone https://github.com/nivarray/flask_app.git
+    ```bash
+    git clone https://github.com/nivarray/flask_app.git
+
+2. Create a virtual environment and activate it:
+    python -m venv venv
+    source venv/bin/activate   # For Windows use `venv\Scripts\activate`
+
+3. Install the required dependencies:
+    pip install -r requirements.txt
+
+4. Set up the database:
+    Depending on the situation, you may choose to use something like SQLite. Be sure to update apt before installing sqlite (sudo apt update).
+    ```bash
+    sudo apt install sqlite3
+
+    Maybe you already have a RDBMS to use for the purposes of this project.
+
+5. Run the Flask application:
+    ```bash
+    flask run
