@@ -16,6 +16,7 @@
         </select>
         <button id="fetchDataBtn" aria-label="Fetch pollen data">Fetch Data</button>
         <button id="joinDataBtn" aria-label="Fetch joined pollen data">Fetch Joined Tables Data</button>
+        <button id="fetchAnnotationsBtn">Fetch Annotations</button>
 
     <div id="dataContainer"></div>
 
@@ -24,6 +25,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <script>
+
         // First button
         document.addEventListener('DOMContentLoaded', () => {
             // All variables used
@@ -33,9 +35,19 @@
             const dataContainer = document.getElementById('dataContainer');
             const createZipBtn = document.getElementById('createZipBtn')
             const downloadZipBtn = document.getElementById('downloadZipBtn');
+            const fetchAnnotationsBtn = document.getElementById('fetchAnnotationsBtn')
             
             // Hide download zip button
             downloadZipBtn.style.display = 'none';
+
+            // // Table structure for all data being fetched (COME BACK TO THIS)
+            // function generateTableHTML(data){
+            //     return dataContainer.innerHTML = '<h1>Query Results</h1><table><thead><tr>' + 
+            //             Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
+            //             '</tr></thead><tbody>' + 
+            //             data.map(row => '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>').join('') +
+            //             '</tbody></table>';
+            // }
 
             // First button
             fetchDataBtn.addEventListener('click', async (event) => {
@@ -128,11 +140,62 @@
                 }
             });
 
+            // Button for displaying annotation data
+            fetchAnnotationsBtn.addEventListener('click', async(event) => {
+                // Prevent any default behavior
+                event.preventDefault();
+
+                // Get the selected pollen name directly from the dropdown
+                const selectedPollen = pollenDropdown.value;
+                
+                // Debugging purposes
+                console.log(`Selected pollen: ${selectedPollen}`);
+
+                // Fetch data from the server
+                try {
+                    const response = await fetch('{{ url_for("main.get_annotations") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ pollen_name: selectedPollen }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log('Response data:', data);
+
+                    if (!data || data.length === 0) {
+                        dataContainer.innerHTML = '<h1>No results found</h1>';
+                        return; // Exit function early
+                    }
+
+                    // Generating the results table from the data
+                    dataContainer.innerHTML = '<h1>Query Results</h1><table><thead><tr>' +
+                    Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') +
+                    '</tr></thead><tbody>' +
+                    data.map(row => '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>').join('') +
+                    '</tbody></table>';
+                    
+
+                } catch (error) {
+                    console.error('Fetch error:', error); // Log any errors
+
+                }
+
+            })
+
             // Handle Zip file download
             // Gather the data based on user choice and have it ready for zip file download
             // use a zip library
             
             downloadZipBtn.addEventListener('click', async() => {
+                // Prevent any default behavior
+                event.preventDefault();
+
                 const pollenData = data; // Contains the fetched data
                 
                 // Add image to ZIP file
