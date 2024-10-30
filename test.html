@@ -48,7 +48,8 @@
 					return null;
 				}
 			}
-
+			
+			// Ensures data retrieved is valid
 			async function handleFetchData(event, endpoint) {
 				event.preventDefault();
 				const selectedPollen = pollenDropdown.value;
@@ -68,7 +69,9 @@
 			fetchJoinDataBtn.addEventListener('click', (event) => handleFetchData(event, '{{ url_for("main.get_related_data_join") }}'));
 			fetchAnnotationsBtn.addEventListener('click', (event) => handleFetchData(event, '{{ url_for("main.get_annotations") }}'));
 
-			// Additional logic for Zip file download
+			// Handle Zip file download
+            // Have gathered data ready for zip file download
+            // use a zip library
 			downloadZipBtn.addEventListener('click', async(event) => {
 				event.preventDefault();
 				const pollenData = await fetchData('{{ url_for("main.fetch_data") }}', pollenDropdown.value);
