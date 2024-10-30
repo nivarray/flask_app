@@ -9,7 +9,7 @@ main_bp = Blueprint('main', __name__)
 
 
 # Alternative function name: get_pollen_name()
-@main_bp.route('/')
+@main_bp.route('/', methods=['GET'])
 def index():
     db = get_db()  # Gets DB connection
     if db is None:
