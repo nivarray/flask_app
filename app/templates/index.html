@@ -11,7 +11,7 @@
         <label for="pollen_name">Choose a pollen:</label>
         <select name="pollen_name" id="pollen_name"> 
             {% for pollen in pollen_names %}
-            <option value="{{ pollen }}">{{ pollen }}</option>
+                <option value="{{ pollen }}">{{ pollen }}</option>
             {% endfor %}
         </select>
         <button id="fetchDataBtn" aria-label="Fetch pollen data">Fetch Data</button>
