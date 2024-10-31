@@ -8,7 +8,7 @@ from .db import get_db
 main_bp = Blueprint('main', __name__)
 
 
-# Alternative function name: get_pollen_name()
+# Alternative function name: pollen_list() or dropdown_list()
 @main_bp.route('/', methods=['GET'])
 def index():
     db = get_db()  # Gets DB connection

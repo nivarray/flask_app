@@ -4,6 +4,7 @@ Contains functions to get and close the DB connection
 """
 import sqlite3
 from flask import g
+
 # g is a global request context, stores data temporarily
 # for the duration of the request. perfect for db connections.
 def get_db():
@@ -24,7 +25,7 @@ def close_db(e=None):
     if db is not None:
         db.close()
 
-# Runs commands from schema
+# Connects to DB and runs commands from schema
 def init_db():
     db = get_db()
     with open('schema.sql', 'r') as f:

@@ -2,7 +2,9 @@
 
 ## Description
 
-The Pollen Annotation Viewer is a Flask web application that allows users to sift through pollen names and retrieve microscopic images of pollen along with all related annotations. This application is designed for efficient data retrieval and user-friendly interaction.
+The Pollen Annotation Viewer is a Flask web application that allows users to sift through pollen names and retrieve microscopic images of pollen along with all related annotations. This application is designed for efficient data retrieval and user-friendly interaction. 
+
+**READ COMMENTS**
 
 ## Features
 

@@ -54,10 +54,12 @@
 				event.preventDefault();
 				const selectedPollen = pollenDropdown.value;
 				const data = await fetchData(endpoint, selectedPollen);
-				
+				// learn more about innerHTML
 				if (data && data.length > 0) {
+					// Maybe add the handling of images here. We want images along with
+					// annotation data before zipping/downloading.
 					dataContainer.innerHTML = generateTableHTML(data);
-					downloadZipBtn.style.display = 'inline-block';
+					downloadZipBtn.style.display = 'inline-block'; // Makes the download zip button reappear
 				} else {
 					dataContainer.innerHTML = '<h1>No results found</h1>';
 				}
@@ -72,6 +74,7 @@
 			// Handle Zip file download
             // Have gathered data ready for zip file download
             // use a zip library
+			// This event listener will be different, images not stored in DB.
 			downloadZipBtn.addEventListener('click', async(event) => {
 				event.preventDefault();
 				const pollenData = await fetchData('{{ url_for("main.fetch_data") }}', pollenDropdown.value);
@@ -80,7 +83,7 @@
 				// Then, initiate the download
 
 			});
-
+		});
 	</script>
 </body>
 </html>

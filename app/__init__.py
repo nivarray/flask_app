@@ -15,6 +15,7 @@ def create_app():
     # Register blueprints
     app.register_blueprint(main_bp)
 
+    # Learn more about this design decision
     # Teardown DB connection
     @app.teardown_appcontext
     def teardown_db(exception):
