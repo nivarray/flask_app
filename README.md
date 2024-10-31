@@ -20,6 +20,13 @@ The Pollen Annotation Viewer is a Flask web application that allows users to sif
 - **Frontend**: HTML, CSS, JavaScript (Bootstrap, jinja2, JSZip, FileSaver)
 - **Image Storage**: Local directory on PC
 
+## Setting Up Environment Variables
+For security, create a unique `SECRET_KEY` for your Flask app.
+
+To set it up:
+- In development: Add a `.env` file in the root directory with `SECRET_KEY=your_unique_key_here`
+- In production: Set the `SECRET_KEY` in your server environment variables
+
 ## Installation
 
 1. Clone this repository:
