@@ -17,185 +17,156 @@
         <button id="fetchDataBtn" aria-label="Fetch pollen data">Fetch Data</button>
         <button id="joinDataBtn" aria-label="Fetch joined pollen data">Fetch Joined Tables Data</button>
         <button id="fetchAnnotationsBtn">Fetch Annotations</button>
+        <button id="displayImagesBtn">Display Images</button> <!-- image display, new button -->
 
     <div id="dataContainer"></div>
+
+    <!-- For displaying images -->
+    <div id="imageContainer"></div>
 
     <!-- JSZip and FileSaver libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <script>
-        // Will refactor this script to be reusable
+        // Will refactor this script to be reusable (DONE)
         // First button
         document.addEventListener('DOMContentLoaded', () => {
-            // All variables used
+            // Containers
+            const dataContainer = document.getElementById('dataContainer');
+            const imageContainer = document.getElementById('imageContainer');
+            // Drop-down
             const pollenDropdown = document.getElementById('pollen_name');
+            // Buttons
             const fetchDataBtn = document.getElementById('fetchDataBtn');
             const fetchJoinDataBtn = document.getElementById('joinDataBtn');
-            const dataContainer = document.getElementById('dataContainer');
             const createZipBtn = document.getElementById('createZipBtn')
             const downloadZipBtn = document.getElementById('downloadZipBtn');
             const fetchAnnotationsBtn = document.getElementById('fetchAnnotationsBtn');
+            const displayImagesBtn = document.getElementById('displayImagesBtn'); // image display, new button
             
             // Hide download zip button
             downloadZipBtn.style.display = 'none';
+            
+            // Table structure for all data being fetched (REUSED)
+            function generateTableHTML(data){
+                return '<h1>Query Results</h1><table><thead><tr>' + 
+                        Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
+                        '</tr></thead><tbody>' + data.map(row => '<tr>' + 
+                        Object.values(row).map(item => `<td>${item}</td>`).join('') + 
+                        '</tr>').join('') + '</tbody></table>';
+            }
+            
+            // Simplifies process of making a POST request to a specific API endpoint (REUSED)
+			async function fetchData(endpoint, selectedPollen) {
+				try {
+					const response = await fetch(endpoint, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ pollen_name: selectedPollen }),
+					});
+					
+					if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+					
+					const data = await response.json();
+					return data;
 
-            // // Table structure for all data being fetched (COME BACK TO THIS)
-            // function generateTableHTML(data){
-            //     return dataContainer.innerHTML = '<h1>Query Results</h1><table><thead><tr>' + 
-            //             Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
-            //             '</tr></thead><tbody>' + 
-            //             data.map(row => '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>').join('') +
-            //             '</tbody></table>';
-            // }
-
-            // First button
-            fetchDataBtn.addEventListener('click', async (event) => {
-                event.preventDefault(); // Prevent any default behavior
-                
-                // Get the selected pollen name directly from the dropdown
-                const selectedPollen = pollenDropdown.value;
-                // Debugging purposes
-                console.log(`Selected pollen: ${selectedPollen}`);
-                
-                // Fetch data from the server
+				} catch (error) {
+					console.error('Fetch error:', error);
+					return null;
+				}
+			}
+            
+            // Create async function called fetchImages, will be similar in structure as fetchData() except it's for displaying the images
+            // GO OVER THIS WITH CHATGPT - GO OVER THE DESIGN DECISION, AND HOW IMAGES NEED TO BE HANDLES COMPARED TO DB DATA
+            async function fetchImages(endpoint, selectedPollen) {
                 try {
-                    const response = await fetch('{{ url_for("main.fetch_data") }}', {
+                    const response = await fetch(endpoint, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ pollen_name: selectedPollen }),
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ pollen_name: selectedPollen })
                     });
-                    // Logs on the website if error occurs
-                    if (!response.ok) {
-                        throw new Error(`<h1>HTTP error! status: ${response.statusText}</h1>`);
-                    }
-    
-                    const data = await response.json();
-                    console.log('Response data:', data);
-                    
-                    if (!data || data.length === 0) {
-                        dataContainer.innerHTML = '<h1>No results found</h1>';
-                        return; // Exit the function early
-                    }
-    
-                    // Generating the results table from the data
-                    dataContainer.innerHTML = '<h1>Query Results</h1><table><thead><tr>' + 
-                    Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
-                    '</tr></thead><tbody>' + 
-                    data.map(row => '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>').join('') +
-                    '</tbody></table>';
+                    if (!response.ok) throw new Error(`Error fetching images: ${response.statusText}`);
 
-                    // Show the download zip button after the data is rendered on the webpage
-                    downloadZipBtn.style.display = 'inline-block';
+                    // Get image paths from response
+                    const imagePaths = await response.json();
+
+                    // Ensure the response is an array of strings (paths)
+                    if (Array.isArray(imagePaths)) {
+                        return imagePaths;
+                    } else {
+                        throw new Error('Response is not in expected format (array of image paths)');
+                    }
+                    
 
                 } catch (error) {
-                    console.error('Fetch error:', error); // Log any errors
+                    console.error('Image Fetch error:', error);
+                    throw error;
                 }
-            });
+            }
 
-            // Second button
-            fetchJoinDataBtn.addEventListener('click', async (event) => {
-                // Prevent any default behavior
-                event.preventDefault(); 
-                
-                // Get the selected pollen name directly from the dropdown
-                const selectedPollen = pollenDropdown.value;
-                console.log(`Selected pollen: ${selectedPollen}`);
-                
-                // Fetch data from the server
-                try {
-                    const response = await fetch('{{ url_for("main.get_related_data_join") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ pollen_name: selectedPollen }),
-                    });
-    
-                    // Logs on the website if error occurs
-                    if (!response.ok) {
-                        throw new Error(`<h1>HTTP error! status: ${response.statusText}</h1>`);
-                    }
-    
-                    const data = await response.json();
-                    console.log('Response data:', data);
-                    
-                    if (!data || data.length === 0) {
-                        dataContainer.innerHTML = '<h1>No results found</h1>';
-                        return; // Exit the function early
-                    }
-    
-                    // Generating the results table from the data
-                    dataContainer.innerHTML = '<h1>Query Results</h1><table><thead><tr>' + 
-                    Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
-                    '</tr></thead><tbody>' + 
-                    data.map(row => '<tr>' + 
-                        Object.values(row).map(item => `<td>${item}</td>`).join('') 
-                        + '</tr>').join('') +
-                        '</tbody></table>';
-                } catch (error) {
-                    console.error('Fetch error:', error); // Log any errors
-                }
-            });
 
-            // Button for displaying annotation data
-            fetchAnnotationsBtn.addEventListener('click', async(event) => {
-                // Prevent any default behavior
+            // Ensures data retrieved is valid and displays data in tabular form(REUSED)
+			async function handleFetchData(event, endpoint) {
+				event.preventDefault();
+				const selectedPollen = pollenDropdown.value;
+				const data = await fetchData(endpoint, selectedPollen);
+				
+				if (data && data.length > 0) {
+					dataContainer.innerHTML = generateTableHTML(data);
+					downloadZipBtn.style.display = 'inline-block'; // Makes the download zip button reappear
+				} else {
+					dataContainer.innerHTML = '<h1>No results found</h1>';
+				}
+			}
+
+            // handleFetchImages function will be created here
+            async function handleFetchImages(event, endpoint) {
                 event.preventDefault();
-
-                // Get the selected pollen name directly from the dropdown
                 const selectedPollen = pollenDropdown.value;
-                
-                // Debugging purposes
-                console.log(`Selected pollen: ${selectedPollen}`);
-
-                // Fetch data from the server
+                const imagePaths = await fetchImages(endpoint, selectedPollen);
                 try {
-                    const response = await fetch('{{ url_for("main.get_annotations") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ pollen_name: selectedPollen }),
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                    // Create img elements for each image path and append them to the imageContainer
+                    if (Array.isArray(imagePaths) && imagePaths.length > 0) {
+                        imageContainer.innerHTML = ''; // Clear any existing images
+                        
+                        imagePaths.forEach(path => {
+                            const imgElement = document.createElement('img');
+                            imgElement.src = path; // The path returned by the server
+                            imgElement.alt = 'Pollen Image';
+                            imageContainer.appendChild(imgElement);
+                        });
+                    } else {
+                        imageContainer.innerHTML = "<p>No images found for the selected pollen.</p>";
                     }
-
-                    const data = await response.json();
-                    console.log('Response data:', data);
-
-                    if (!data || data.length === 0) {
-                        dataContainer.innerHTML = '<h1>No results found</h1>';
-                        return; // Exit function early
-                    }
-
-                    // Generating the results table from the data
-                    dataContainer.innerHTML = '<h1>Query Results</h1><table><thead><tr>' +
-                    Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') +
-                    '</tr></thead><tbody>' +
-                    data.map(row => '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>').join('') +
-                    '</tbody></table>';
-                    
-
                 } catch (error) {
-                    console.error('Fetch error:', error); // Log any errors
-
+                    // In case of error, show a user-friendly message
+                    imageContainer.innerHTML = "<p>Failed to load images. Please try again later.</p>";
                 }
+                
+            }
 
-            })
+
+
+			// Event listeners using the reusable function above
+			fetchDataBtn.addEventListener('click', (event) => handleFetchData(event, '{{ url_for("main.fetch_data") }}'));
+			fetchJoinDataBtn.addEventListener('click', (event) => handleFetchData(event, '{{ url_for("main.get_related_data_join") }}'));
+			fetchAnnotationsBtn.addEventListener('click', (event) => handleFetchData(event, '{{ url_for("main.get_annotations") }}'));
+            displayImagesBtn.addEventListener('click', (event) => handleFetchImages(event, '{{ url_for("main.fetch_images") }}'));
 
             // Handle Zip file download
             // Have gathered data ready for zip file download
             // use a zip library
-            
+            // Scenario: after clicking fetch data buttons, data for that pollen will be displayed on website
+            // Then, images of that selected pollen will be displayed
+            // Then, a button will grab that data + images and store it and make it downloadable.
             downloadZipBtn.addEventListener('click', async() => {
                 // Prevent any default behavior
                 event.preventDefault();
-
+                
+                // Want to grab both data that gets fetched after clicking button & images
                 const pollenData = data; // Contains the fetched data
                 
                 // Add image to ZIP file
@@ -213,3 +184,9 @@
     <button id="downloadZipBtn">Create Zip File</button>    
 </body>
 </html>
+
+<!-- Things to review:
+    learn more about innerHTML
+
+
+  -->

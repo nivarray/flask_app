@@ -23,8 +23,7 @@
 					Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
 					'</tr></thead><tbody>' + data.map(row => '<tr>' + 
 					Object.values(row).map(item => `<td>${item}</td>`).join('') + 
-					'</tr>').join('') +
-					'</tbody></table>';
+					'</tr>').join('') + '</tbody></table>';
 			}
 			
 			// Simplifies process of making a POST request to a specific API endpoint

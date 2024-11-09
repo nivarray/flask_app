@@ -2,8 +2,9 @@
 Contains routes and handles HTTP requests
 Retrieves data from DB, passes to the templates
 """
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, current_app
 from .db import get_db
+import os
 
 main_bp = Blueprint('main', __name__)
 
@@ -31,7 +32,7 @@ def fetch_data():
         return jsonify({"error": "Database connection failed"}), 500
     
     rows = db.execute('SELECT * FROM pollens WHERE name = ?', (selected_pollen,)).fetchall()
-    print(f"Fetched rows: {rows}")  # Log fetched rows
+    print(f"Fetched rows: {[dict(row) for row in rows]}")  # Log fetched rows
     return jsonify([dict(row) for row in rows])  
 # row needs to be cast as dict because jsonify can't handle the sqlite3.Row object 
 # (which is dictionary-like but not a dict)
@@ -60,3 +61,31 @@ def get_annotations():
     
     rows = db.execute("SELECT a.annotation_text FROM pollens p JOIN annotations a ON p.id=a.pollen_id WHERE p.name= ?;", (selected_pollen,)).fetchall()
     return jsonify([dict(row) for row in rows])
+
+
+"""For displaying images"""
+@main_bp.route('/fetch_images', methods=['GET'])
+def fetch_images():
+    selected_pollen = request.args.get("pollen_name")
+
+    # Base directory where 'img' folder is located
+    img_folder = os.path.join(current_app.static_folder, "img")
+    matching_imgs = []
+
+    # Check if the directory corresponding to the selected pollen exists
+    pollen_dir = os.path.join(img_folder, selected_pollen.lower())
+    if not os.path.isdir(pollen_dir):
+        return jsonify({"error": f"No images found for the selected pollen: {selected_pollen}"}), 400
+    
+    # Loop through all files in the selected pollen
+    for filename in os.listdir(pollen_dir):
+        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+            # Construct the file path relative to the 'static' folder
+            file_path = url_for('static', filename=f'img/{selected_pollen.lower()}/{filename}')
+            matching_imgs.append(file_path)
+
+    # Return the images found or an appropriate message if none found
+    if not matching_imgs:
+        return jsonify({"message": "No images found for the selected pollen"}), 404
+    
+    return jsonify(matching_imgs)

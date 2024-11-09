@@ -3,7 +3,7 @@ Config settings
 """
 
 import os
-# Load env variables from .end file
+# Load env variables from .env file
 from dotenv import load_dotenv
 
 load_dotenv() # Load var from .env into the environment
