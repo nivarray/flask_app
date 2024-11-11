@@ -64,9 +64,9 @@ def get_annotations():
 
 
 """For displaying images"""
-@main_bp.route('/fetch_images', methods=['GET'])
+@main_bp.route('/fetch_images', methods=['GET', 'POST'])
 def fetch_images():
-    selected_pollen = request.args.get("pollen_name")
+    selected_pollen = request.json.get("pollen_name")
 
     # Base directory where 'img' folder is located
     img_folder = os.path.join(current_app.static_folder, "img")
@@ -74,6 +74,7 @@ def fetch_images():
 
     # Check if the directory corresponding to the selected pollen exists
     pollen_dir = os.path.join(img_folder, selected_pollen.lower())
+    print(pollen_dir)
     if not os.path.isdir(pollen_dir):
         return jsonify({"error": f"No images found for the selected pollen: {selected_pollen}"}), 400
     

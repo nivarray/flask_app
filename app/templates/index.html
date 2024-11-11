@@ -1,6 +1,6 @@
-<!DOCTYPE html>
+<!DOCTYPE html> <!-- Let's the browser know this is HTML5 -->
 <html lang="en">
-<head>
+<head>      <!-- Where metadata about the document is defined -->
     <meta charset="UTF-8">
     <title>Pollen Information</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,18 +19,17 @@
         <button id="fetchAnnotationsBtn">Fetch Annotations</button>
         <button id="displayImagesBtn">Display Images</button> <!-- image display, new button -->
 
+    <!-- For displaying tabular data -->
     <div id="dataContainer"></div>
 
     <!-- For displaying images -->
     <div id="imageContainer"></div>
 
     <!-- JSZip and FileSaver libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script> <!-- Helps create the ZIP-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script> <!-- Enables the ability to download the ZIP file-->
 
     <script>
-        // Will refactor this script to be reusable (DONE)
-        // First button
         document.addEventListener('DOMContentLoaded', () => {
             // Containers
             const dataContainer = document.getElementById('dataContainer');
@@ -48,16 +47,26 @@
             // Hide download zip button
             downloadZipBtn.style.display = 'none';
             
+            // Displays download button after there's data in both containers 
+            function checkDataAndImageContainer(){
+                if (dataContainer.innerHTML.trim() !== '' && imageContainer.innerHTML.trim() !== ''){
+                    downloadZipBtn.style.display = 'inline-block'; // Makes the download zip button reappear
+                }
+            }
+
             // Table structure for all data being fetched (REUSED)
             function generateTableHTML(data){
-                return '<h1>Query Results</h1><table><thead><tr>' + 
+                const selectedPollen = pollenDropdown.value.charAt(0).toUpperCase() + 
+                    pollenDropdown.value.slice(1); // Capitalizes the first letter of pollen name
+
+                return `<h1>Query Results For ${selectedPollen}</h1><table><thead><tr>` + 
                         Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
                         '</tr></thead><tbody>' + data.map(row => '<tr>' + 
                         Object.values(row).map(item => `<td>${item}</td>`).join('') + 
                         '</tr>').join('') + '</tbody></table>';
             }
             
-            // Simplifies process of making a POST request to a specific API endpoint (REUSED)
+            // Requests for DB data
 			async function fetchData(endpoint, selectedPollen) {
 				try {
 					const response = await fetch(endpoint, {
@@ -70,7 +79,8 @@
 					
 					if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 					
-					const data = await response.json();
+                    // If request is successful, response.json() parses the JSON from server and returns JS object
+					const data = await response.json(); 
 					return data;
 
 				} catch (error) {
@@ -79,15 +89,15 @@
 				}
 			}
             
-            // Create async function called fetchImages, will be similar in structure as fetchData() except it's for displaying the images
-            // GO OVER THIS WITH CHATGPT - GO OVER THE DESIGN DECISION, AND HOW IMAGES NEED TO BE HANDLES COMPARED TO DB DATA
+            // Requests for images
             async function fetchImages(endpoint, selectedPollen) {
                 try {
                     const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ pollen_name: selectedPollen })
+                        method: 'POST', // This means that the request should use the POST method (Sends data to server)
+                        headers: { 'Content-Type': 'application/json' }, // Informs server that the request contains JSON data
+                        body: JSON.stringify({ pollen_name: selectedPollen }) // Send as JSON
                     });
+
                     if (!response.ok) throw new Error(`Error fetching images: ${response.statusText}`);
 
                     // Get image paths from response
@@ -107,8 +117,7 @@
                 }
             }
 
-
-            // Ensures data retrieved is valid and displays data in tabular form(REUSED)
+            // Ensures data retrieved is valid and displays data in tabular form
 			async function handleFetchData(event, endpoint) {
 				event.preventDefault();
 				const selectedPollen = pollenDropdown.value;
@@ -116,13 +125,15 @@
 				
 				if (data && data.length > 0) {
 					dataContainer.innerHTML = generateTableHTML(data);
-					downloadZipBtn.style.display = 'inline-block'; // Makes the download zip button reappear
 				} else {
 					dataContainer.innerHTML = '<h1>No results found</h1>';
 				}
+                
+                // Check if both containers are populated to display downloadZipBtn button
+                checkDataAndImageContainer();
 			}
 
-            // handleFetchImages function will be created here
+            // Ensures Images retrieved is valid and displays images  
             async function handleFetchImages(event, endpoint) {
                 event.preventDefault();
                 const selectedPollen = pollenDropdown.value;
@@ -145,9 +156,11 @@
                     // In case of error, show a user-friendly message
                     imageContainer.innerHTML = "<p>Failed to load images. Please try again later.</p>";
                 }
+
+                // Check if both containers are populated to display downloadZipBtn button
+                checkDataAndImageContainer();
                 
             }
-
 
 
 			// Event listeners using the reusable function above
@@ -155,6 +168,10 @@
 			fetchJoinDataBtn.addEventListener('click', (event) => handleFetchData(event, '{{ url_for("main.get_related_data_join") }}'));
 			fetchAnnotationsBtn.addEventListener('click', (event) => handleFetchData(event, '{{ url_for("main.get_annotations") }}'));
             displayImagesBtn.addEventListener('click', (event) => handleFetchImages(event, '{{ url_for("main.fetch_images") }}'));
+
+
+
+
 
             // Handle Zip file download
             // Have gathered data ready for zip file download
