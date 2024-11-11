@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, jsonif
 from .db import get_db
 import os
 
+# Learn more about Blueprint
 main_bp = Blueprint('main', __name__)
 
 
@@ -22,7 +23,6 @@ def index():
 
 
 """Gets data from the DB and returns it as a json format"""
-"""Keep things as small as possible, this function will be used to get the rows with the same name from the pollens table"""
 @main_bp.route('/fetch_data', methods=['GET','POST'])
 def fetch_data():
     selected_pollen = request.json.get('pollen_name')

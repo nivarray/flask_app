@@ -18,6 +18,7 @@
         <button id="joinDataBtn" aria-label="Fetch joined pollen data">Fetch Joined Tables Data</button>
         <button id="fetchAnnotationsBtn">Fetch Annotations</button>
         <button id="displayImagesBtn">Display Images</button> <!-- image display, new button -->
+        <button id="downloadZipBtn">Create Zip File</button> 
 
     <!-- For displaying tabular data -->
     <div id="dataContainer"></div>
@@ -76,7 +77,7 @@
 						},
 						body: JSON.stringify({ pollen_name: selectedPollen }),
 					});
-					
+					// learn more about .ok
 					if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 					
                     // If request is successful, response.json() parses the JSON from server and returns JS object
@@ -142,7 +143,7 @@
                     // Create img elements for each image path and append them to the imageContainer
                     if (Array.isArray(imagePaths) && imagePaths.length > 0) {
                         imageContainer.innerHTML = ''; // Clear any existing images
-                        
+                        // learn more about .foreach
                         imagePaths.forEach(path => {
                             const imgElement = document.createElement('img');
                             imgElement.src = path; // The path returned by the server
@@ -169,16 +170,12 @@
 			fetchAnnotationsBtn.addEventListener('click', (event) => handleFetchData(event, '{{ url_for("main.get_annotations") }}'));
             displayImagesBtn.addEventListener('click', (event) => handleFetchImages(event, '{{ url_for("main.fetch_images") }}'));
 
-
-
-
-
             // Handle Zip file download
             // Have gathered data ready for zip file download
             // use a zip library
             // Scenario: after clicking fetch data buttons, data for that pollen will be displayed on website
             // Then, images of that selected pollen will be displayed
-            // Then, a button will grab that data + images and store it and make it downloadable.
+            // Then, a button will appear to grab that data + images, store it and make it downloadable.
             downloadZipBtn.addEventListener('click', async() => {
                 // Prevent any default behavior
                 event.preventDefault();
@@ -196,14 +193,6 @@
             });
         });
     </script>
-    <img src="{{ url_for('static', filename='img/capy.jpg') }}" alt="judgemental capybara">
-    <br><br>
-    <button id="downloadZipBtn">Create Zip File</button>    
+    <!-- <img src="{{ url_for('static', filename='img/capy.jpg') }}" alt="judgemental capybara"> -->
 </body>
 </html>
-
-<!-- Things to review:
-    learn more about innerHTML
-
-
-  -->
