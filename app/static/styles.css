@@ -20,11 +20,21 @@ th {
     background-color: #f2f2f2;
 }
 
-img {
-    width: 300px;
-    height: auto; /* maintains aspect ratio */
-    border: 5px solid black;
+#imageContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive columns */
+    gap: 10px; /* Space between images */
+    padding: 10px;
+    margin-top: 10px;
+    width: 80%;
 }
+
+#imageContainer img {
+    width: 150px;
+    height: auto; /* maintains aspect ratio */
+    border: 3px solid black;
+}
+
 
 button {
     margin-top: 10px;
@@ -43,3 +53,4 @@ button:hover {
 #dataContainer {
     margin-top: 20px;
 }
+
