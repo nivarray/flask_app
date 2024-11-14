@@ -12,16 +12,17 @@ def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('../config.py')
 
-    # Register blueprints
+    # Register blueprints: allows you to organize your app into smaller, modular components
     app.register_blueprint(main_bp)
 
-    # Learn more about this design decision
-    # Teardown DB connection
+
+    # Automatically tears down DB connection after every request or exception
     @app.teardown_appcontext
     def teardown_db(exception):
         if exception:
-            print(f"Exception occured: {exception}")  # Logs if something goes wrong
+            app.logger.error(f"Exception occured: {exception}")  # Logs if something goes wrong using Flask's logger
         close_db()
+
 
     # Initializes the DB from the schema.sql file
     @app.cli.command('init-db')

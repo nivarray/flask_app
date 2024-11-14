@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, jsonif
 from .db import get_db
 import os
 
-# Learn more about Blueprint
+# 'main' is the blueprint name, __name__ helps Flask locate resources
 main_bp = Blueprint('main', __name__)
 
 
@@ -19,6 +19,7 @@ def index():
     
     # Gets the pollen names from the pollens table
     pollen_names = [row['name'] for row in db.execute("SELECT name FROM pollens").fetchall()]  # index.html uses this variable
+    
     return render_template('index.html', pollen_names=pollen_names)
 
 
@@ -33,6 +34,7 @@ def fetch_data():
     
     rows = db.execute('SELECT * FROM pollens WHERE name = ?', (selected_pollen,)).fetchall()
     print(f"Fetched rows: {[dict(row) for row in rows]}")  # Log fetched rows
+
     return jsonify([dict(row) for row in rows])  
 # row needs to be cast as dict because jsonify can't handle the sqlite3.Row object 
 # (which is dictionary-like but not a dict)
@@ -48,6 +50,7 @@ def get_related_data_join():
         return jsonify({"error": "Database connection failed"}), 500
     
     rows = db.execute("SELECT * FROM pollens p JOIN related_data rd ON p.id = rd.pollen_id WHERE p.name= ?;", (selected_pollen,)).fetchall()
+
     return jsonify([dict(row) for row in rows])  
 
 
@@ -60,6 +63,7 @@ def get_annotations():
         return jsonify({"error": "Database connection failed"}), 500
     
     rows = db.execute("SELECT a.annotation_text FROM pollens p JOIN annotations a ON p.id=a.pollen_id WHERE p.name= ?;", (selected_pollen,)).fetchall()
+
     return jsonify([dict(row) for row in rows])
 
 
