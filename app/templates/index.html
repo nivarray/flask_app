@@ -139,15 +139,26 @@
                 event.preventDefault();
                 const selectedPollen = pollenDropdown.value;
                 const imagePaths = await fetchImages(endpoint, selectedPollen);
+
                 try {
+                    // Clear any existing images
+                    imageContainer.innerHTML = ''; 
+
                     // Create img elements for each image path and append them to the imageContainer
                     if (Array.isArray(imagePaths) && imagePaths.length > 0) {
-                        imageContainer.innerHTML = ''; // Clear any existing images
+                        
                         // learn more about .foreach
-                        imagePaths.forEach(path => {
+                        imagePaths.forEach((path, index) => {
                             const imgElement = document.createElement('img');
                             imgElement.src = path; // The path returned by the server
-                            imgElement.alt = 'Pollen Image';
+                            imgElement.alt = `Pollen Image ${index + 1}`; // Returns a text description if image not available
+                            
+                            // Add click event to toggle selection
+                            imgElement.addEventListener('click', () => {
+                                imgElement.classList.toggle('selected'); // Toggles between select/deselect
+                            })
+                            
+                            // Append all changes made to each image to the image container
                             imageContainer.appendChild(imgElement);
                         });
                     } else {
@@ -163,6 +174,14 @@
                 
             }
 
+            // Stores user selected images
+            function getSelectedImages() {
+                const selectedImages = [];
+                document.querySelectorAll('#imageContainer img.selected').forEach(img => {
+                    selectedImages.push(img.src); // Collect the paths of selected images
+                });
+                return selectedImages;
+            }
 
 			// Event listeners using the reusable function above
 			fetchDataBtn.addEventListener('click', (event) => handleFetchData(event, '{{ url_for("main.fetch_data") }}'));
