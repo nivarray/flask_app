@@ -103,6 +103,9 @@
 
                     // Get image paths from response
                     const imagePaths = await response.json();
+                    
+                    // console.log for testing purposes
+                    console.log(`This is the imagePaths array: ${imagePaths}`)
 
                     // Ensure the response is an array of strings (paths)
                     if (Array.isArray(imagePaths)) {
@@ -147,7 +150,7 @@
                     // Create img elements for each image path and append them to the imageContainer
                     if (Array.isArray(imagePaths) && imagePaths.length > 0) {
                         
-                        // learn more about .foreach
+                        // Loops through array, assigns path for each to the src, and adds to the container
                         imagePaths.forEach((path, index) => {
                             const imgElement = document.createElement('img');
                             imgElement.src = path; // The path returned by the server
