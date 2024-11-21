@@ -58,6 +58,10 @@ button:hover {
     background-color: #a9a9a9; /* Darker gray */
 }
 
+button:focus {
+    outline: 2px solid #4682b4; /* Sky blue outline for accessibility */
+}
+
 #dataContainer {
     margin-top: 20px;
 }

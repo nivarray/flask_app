@@ -10,13 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const createZipBtn = document.getElementById('createZipBtn')
     const downloadZipBtn = document.getElementById('downloadZipBtn');
     const fetchAnnotationsBtn = document.getElementById('fetchAnnotationsBtn');
-    const displayImagesBtn = document.getElementById('displayImagesBtn'); // image display, new button
+    const displayImagesBtn = document.getElementById('displayImagesBtn'); // image display
+    const selectDeselectAllBtn = document.getElementById('selectDeselect'); // select/deselect all images button (new)
     
     // Hide download zip button
     downloadZipBtn.style.display = 'none';
     
     // Displays download button after there's data in both containers 
-    function checkDataAndImageContainer(){
+    function checkDataAndImageContainer(dataContainer, imageContainer){
         if (dataContainer.innerHTML.trim() !== '' && imageContainer.innerHTML.trim() !== ''){
             downloadZipBtn.style.display = 'inline-block'; // Makes the download zip button reappear
         }
@@ -136,15 +137,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             // In case of error, show a user-friendly message
-            imageContainer.innerHTML = "<p>Failed to load images. Please try again later.</p>";
+            imageContainer.innerHTML = "<p>Failed to load images. Please try again.</p>";
         }
-
         // Check if both containers are populated to display downloadZipBtn button
-        checkDataAndImageContainer();
-        
+        checkDataAndImageContainer(dataContainer, imageContainer);
     }
 
-    // Stores user selected images
+    // Checks if images are all selected, then deselect them. If all are deselected, then select them
+    function toggleSelectAll() {
+        const allImages = document.querySelectorAll('#imageContainer img'); // Get all images
+        const areAllSelected = Array.from(allImages).every(img => img.classList.contains('selected')); // Check if all are selected
+
+        // if all images are selected, deselect all, otherwise, select all
+        allImages.forEach(img => {
+            if (areAllSelected) {
+                img.classList.remove('selected') // Deselect all images
+            } else {
+                img.classList.add('selected'); // Select all images
+            }
+        });
+
+    }
+
+    // Stores user selected images (FOR ZIP DOWNLOAD FUNCTIONALITY)
     function getSelectedImages() {
         const selectedImages = [];
         document.querySelectorAll('#imageContainer img.selected').forEach(img => {
@@ -153,11 +168,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return selectedImages;
     }
 
+    // Stores annotation data
+    function getAnnotationData() {
+        // Implement the acquiring of data from the table displayed on the webpage
+    }
+
     // Event listeners using the reusable function above
     fetchDataBtn.addEventListener('click', (event) => handleFetchData(event, endpoints.fetchData));
     fetchJoinDataBtn.addEventListener('click', (event) => handleFetchData(event, endpoints.getRelatedDataJoin));
     fetchAnnotationsBtn.addEventListener('click', (event) => handleFetchData(event, endpoints.getAnnotations));
     displayImagesBtn.addEventListener('click', (event) => handleFetchImages(event, endpoints.fetchImages));
+    selectDeselectAllBtn.addEventListener('click', toggleSelectAll);
+
 
     // Handle Zip file download
     // Have gathered data ready for zip file download
@@ -181,3 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
     });
 });
+
+// IMPROVEMENTS FROM CHATGPT
+// Additional Considerations:
+// Debounce Button Clicks: If the buttons (fetchDataBtn, fetchJoinDataBtn, etc.) are pressed multiple times quickly, it might lead to unnecessary fetch requests. Consider debouncing the button clicks to avoid redundant calls.
+// CSS Styling for Selected State: Ensure you have styles defined for the .selected class so that users can clearly see which images are selected. You could use styles like a border, opacity change, or background color to highlight selected images.
