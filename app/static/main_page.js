@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ pollen_name: selectedPollen }),
             });
-            // learn more about .ok
+            // Checks if there's a backend connection 
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             
             // If request is successful, response.json() parses the JSON from server and returns JS object
@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 throw new Error('Response is not in expected format (array of image paths)');
             }
-            
 
         } catch (error) {
             console.error('Image Fetch error:', error);
@@ -102,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Check if both containers are populated to display downloadZipBtn button
-        checkDataAndImageContainer();
+        checkDataAndImageContainer(dataContainer, imageContainer);
     }
 
     // Ensures Images retrieved is valid and displays images  
@@ -187,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Scenario: after clicking fetch data buttons, data for that pollen will be displayed on website
     // Then, images of that selected pollen will be displayed
     // Then, a button will appear to grab that data + images, store it and make it downloadable.
+    // Probably need two functions, one for zipping the files, and the other for downloading
     downloadZipBtn.addEventListener('click', async() => {
         // Prevent any default behavior
         event.preventDefault();
