@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fetchAnnotationsBtn = document.getElementById('fetchAnnotationsBtn');
     const displayImagesBtn = document.getElementById('displayImagesBtn'); // image display
     const selectDeselectAllBtn = document.getElementById('selectDeselect'); // select/deselect all images button (new)
+    const imageToZipBtn = document.getElementById('imageToZipBtn');
     // Global variable
     let annotationData = null;
     
@@ -162,12 +163,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Stores user selected images (FOR ZIP DOWNLOAD FUNCTIONALITY)
-    function getSelectedImages() {
-        const selectedImages = [];
-        document.querySelectorAll('#imageContainer img.selected').forEach(img => {
-            selectedImages.push(img.src); // Collect the paths of selected images
-        });
-        return selectedImages;
+    async function getSelectedImages() {
+        // const selectedImages = [];
+        // document.querySelectorAll('#imageContainer img.selected').forEach(img => {
+        //     selectedImages.push(img.src); // Collect the paths of selected images
+        // });
+        // return selectedImages;
+
+        // get images from the server
+        // convert retrieved data into blob data or binary format
+        const selectedImages = document.querySelectorAll('#imageContainer img.selected');
+        blobs = []
+
+        for (const img of selectedImages) {
+            const blobImg = await fetch (img.src).then( res => res.blob());
+            blobs.push(blobImg);
+        }
+
+        console.log(blobs.length);
+        return blobs;
+    
     }
 
     // Stores annotation data
@@ -183,6 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchAnnotationsBtn.addEventListener('click', (event) => handleFetchData(event, endpoints.getAnnotations));
     displayImagesBtn.addEventListener('click', (event) => handleFetchImages(event, endpoints.fetchImages));
     selectDeselectAllBtn.addEventListener('click', toggleSelectAll);
+    imageToZipBtn.addEventListener('click', getSelectedImages);
 
 
     // Handle Zip file download
