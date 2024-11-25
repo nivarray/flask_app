@@ -164,14 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Stores user selected images (FOR ZIP DOWNLOAD FUNCTIONALITY)
     async function getSelectedImages() {
-        // const selectedImages = [];
-        // document.querySelectorAll('#imageContainer img.selected').forEach(img => {
-        //     selectedImages.push(img.src); // Collect the paths of selected images
-        // });
-        // return selectedImages;
-
-        // get images from the server
-        // convert retrieved data into blob data or binary format
         const selectedImages = document.querySelectorAll('#imageContainer img.selected');
         blobs = []
 
