@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const fetchAnnotationsBtn = document.getElementById('fetchAnnotationsBtn');
     const displayImagesBtn = document.getElementById('displayImagesBtn'); // image display
     const selectDeselectAllBtn = document.getElementById('selectDeselect'); // select/deselect all images button (new)
+    // Global variable
+    let annotationData = null;
     
     // Hide download zip button
     downloadZipBtn.style.display = 'none';
@@ -95,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await fetchData(endpoint, selectedPollen);
         
         if (data && data.length > 0) {
+            annotationData = data // sets the fetched data to a global variable which will be used later
             dataContainer.innerHTML = generateTableHTML(data);
         } else {
             dataContainer.innerHTML = '<h1>No results found</h1>';
@@ -170,6 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Stores annotation data
     function getAnnotationData() {
         // Implement the acquiring of data from the table displayed on the webpage
+        
+
     }
 
     // Event listeners using the reusable function above
