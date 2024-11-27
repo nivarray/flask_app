@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectDeselectAllBtn = document.getElementById('selectDeselect'); // select/deselect all images button (new)
     const imageToZipBtn = document.getElementById('imageToZipBtn');
     // Global variable
-    let annotationData = null;
+    let displayedData = null;
     
     // Hide download zip button
     downloadZipBtn.style.display = 'none';
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await fetchData(endpoint, selectedPollen);
         
         if (data && data.length > 0) {
-            annotationData = data // sets the fetched data to a global variable which will be used later
+            displayedData = data // sets the fetched data to a global variable which will be used later
             dataContainer.innerHTML = generateTableHTML(data);
         } else {
             dataContainer.innerHTML = '<h1>No results found</h1>';
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
         blobs = []
 
         for (const img of selectedImages) {
-            const blobImg = await fetch (img.src).then( res => res.blob());
+            const blobImg = await fetch (img.src).then( res => res.blob() );
             blobs.push(blobImg);
         }
 
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle Zip file download
     // Have gathered data ready for zip file download
     // use a zip library
-    // Scenario: after clicking fetch data buttons, data for that pollen will be displayed on website
+    // Scenario: after clicking one of the fetch data buttons, data for that pollen will be displayed on website
     // Then, images of that selected pollen will be displayed
     // Then, a button will appear to grab that data + images, store it and make it downloadable.
     // Probably need two functions, one for zipping the files, and the other for downloading
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         
         // Want to grab both data that gets fetched after clicking button & images
-        const pollenData = data; // Contains the fetched data
+        const selectedAnnotationData = annotationData; // Contains the fetched data
         
         // Add image to ZIP file
 

@@ -10,6 +10,7 @@ import os
 main_bp = Blueprint('main', __name__)
 
 
+"""Gets pollen names from the pollens table, sends to index.html"""
 # Alternative function name: pollen_list() or dropdown_list()
 @main_bp.route('/', methods=['GET'])
 def index():
@@ -67,7 +68,7 @@ def get_annotations():
     return jsonify([dict(row) for row in rows])
 
 
-"""For displaying images"""
+"""Grabs iamges from the static/img/ directory and sends to the front end"""
 @main_bp.route('/fetch_images', methods=['GET', 'POST'])
 def fetch_images():
     selected_pollen = request.json.get("pollen_name")
@@ -78,7 +79,6 @@ def fetch_images():
 
     # Check if the directory corresponding to the selected pollen exists
     pollen_dir = os.path.join(img_folder, selected_pollen.lower())
-    print(pollen_dir)
     if not os.path.isdir(pollen_dir):
         return jsonify({"error": f"No images found for the selected pollen: {selected_pollen}"}), 400
     
