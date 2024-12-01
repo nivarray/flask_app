@@ -39,6 +39,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 Object.values(row).map(item => `<td>${item}</td>`).join('') + 
                 '</tr>').join('') + '</tbody></table>';
     }
+
+    // CHATGPT'S ALTERNATIVE TO THE ABOVE TABLE FORMAT IN HTML, CHECK WHICH IS BETTER!!!!!!!!!
+    // function generateTableHTML(data) {
+    //     const selectedPollen = pollenDropdown.value.charAt(0).toUpperCase() + pollenDropdown.value.slice(1);
+    
+    //     let tableHTML = `<h2>Query Results For ${selectedPollen}</h2><table><thead><tr>`;
+    //     tableHTML += Object.keys(data[0]).map(key => `<th>${key}</th>`).join('');
+    //     tableHTML += '</tr></thead><tbody>';
+    //     tableHTML += data.map(row => 
+    //         '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>'
+    //     ).join('');
+    //     tableHTML += '</tbody></table>';
+    
+    //     return tableHTML;
+    // }
     
     // Requests for DB data
     async function fetchData(endpoint, selectedPollen) {
@@ -98,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const selectedPollen = pollenDropdown.value;
         const data = await fetchData(endpoint, selectedPollen);
-        
+        console.log(data);
         if (data && data.length > 0) {
             displayedData = data // sets the fetched data to a global variable which will be used later
             dataContainer.innerHTML = generateTableHTML(data);
@@ -136,6 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // Append all changes made to each image to the image container
                     imageContainer.appendChild(imgElement);
+
+                    // Check if both containers are populated to display downloadZipBtn button
+                    checkDataAndImageContainer(dataContainer, imageContainer);
                 });
             } else {
                 imageContainer.innerHTML = "<p>No images found for the selected pollen.</p>";
@@ -144,8 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // In case of error, show a user-friendly message
             imageContainer.innerHTML = "<p>Failed to load images. Please try again.</p>";
         }
-        // Check if both containers are populated to display downloadZipBtn button
-        checkDataAndImageContainer(dataContainer, imageContainer);
+        
     }
 
     // Checks if images are all selected, then deselect them. If all are deselected, then select them
@@ -188,20 +205,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function annotationDataToBlob() {
+        const selectedAnnotationData = displayedData;
 
+        // convert the data to a JSON string
+        const dataString = JSON.stringify(selectedAnnotationData);
+
+        // create blob from string
+        const dataToBlob = new Blob([dataString], {type: 'application/json' });
+        // only works for fetching data from URLs or flask endpoints --> const dataToBlob = await fetch (selectAnnotationData).then( res => res.blob() );
+        return dataToBlob;
     }
 
 
     async function handleDataDownload() {
-        const selectedAnnotationData = annotationData; // Contains the fetched data (NON-Blob)
-        const imageData = getSelectedImages(); // Contains images in blob format
+        const annotationDataBlob = await annotationDataToBlob();
+        const imageData = await imageToBlob(); // Contains images in blob format
         const zip = new JSZip();
 
-        if (imageData.length !== 0 && selectedAnnotationData !== 0) {
-            // Add image to ZIP file
-
-            // Add annotation data
-
+        if (imageData.length !== 0 && selectedAnnotationData.length !== 0) {
+            // Add image to ZIP file, give each image a unique name (I want to explicitly name it whatever the user chooses later)
+            imageData.forEach((image, index) => {
+                zip.file(`image_${index + 1}.jpg`, image);
+            });
+            // Add annotation data, saved in json format since it is commonly used
+            zip.file('annotations.json', annotationDataBlob);
 
             // Generate the ZIP file and trigger the download
         }
