@@ -1,3 +1,5 @@
+import JSZip from "jszip";
+
 document.addEventListener('DOMContentLoaded', () => {
     // Containers
     const dataContainer = document.getElementById('dataContainer');
@@ -162,14 +164,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
+    // might have to re do the below function.
+    // name it convertToBlob and have it handle both tabular data and image data.
+    // right now i am just turning image data into blob, not knowing that tabular 
+    // data needs to be turned into blob format as well
+    // UPDATE: I have decided to create two separate functions to deal with each data type (image data, tabular data)
+
     // Stores user selected images (FOR ZIP DOWNLOAD FUNCTIONALITY)
-    async function getSelectedImages() {
+    async function imageToBlob() {
         const selectedImages = document.querySelectorAll('#imageContainer img.selected');
-        blobs = []
+        const blobs = [] // declare variables with either let or const, do not forget
+
+        // include error handling in here
 
         for (const img of selectedImages) {
-            const blobImg = await fetch (img.src).then( res => res.blob() );
-            blobs.push(blobImg);
+            const blob = await fetch (img.src).then( res => res.blob() );
+            blobs.push(blob);
         }
 
         console.log(blobs.length);
@@ -177,10 +187,25 @@ document.addEventListener('DOMContentLoaded', () => {
     
     }
 
-    // Stores annotation data
-    function getAnnotationData() {
-        // Implement the acquiring of data from the table displayed on the webpage
-        
+    async function annotationDataToBlob() {
+
+    }
+
+
+    async function handleDataDownload() {
+        const selectedAnnotationData = annotationData; // Contains the fetched data (NON-Blob)
+        const imageData = getSelectedImages(); // Contains images in blob format
+        const zip = new JSZip();
+
+        if (imageData.length !== 0 && selectedAnnotationData !== 0) {
+            // Add image to ZIP file
+
+            // Add annotation data
+
+
+            // Generate the ZIP file and trigger the download
+        }
+
 
     }
 
@@ -190,34 +215,11 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchAnnotationsBtn.addEventListener('click', (event) => handleFetchData(event, endpoints.getAnnotations));
     displayImagesBtn.addEventListener('click', (event) => handleFetchImages(event, endpoints.fetchImages));
     selectDeselectAllBtn.addEventListener('click', toggleSelectAll);
-    imageToZipBtn.addEventListener('click', getSelectedImages);
-
-
-    // Handle Zip file download
-    // Have gathered data ready for zip file download
-    // use a zip library
-    // Scenario: after clicking one of the fetch data buttons, data for that pollen will be displayed on website
-    // Then, images of that selected pollen will be displayed
-    // Then, a button will appear to grab that data + images, store it and make it downloadable.
-    // Probably need two functions, one for zipping the files, and the other for downloading
-    downloadZipBtn.addEventListener('click', async() => {
-        // Prevent any default behavior
-        event.preventDefault();
-        
-        // Want to grab both data that gets fetched after clicking button & images
-        const selectedAnnotationData = annotationData; // Contains the fetched data
-        
-        // Add image to ZIP file
-
-        // Add annotation data
-
-
-        // Generate the ZIP file and trigger the download
-        
-    });
+    // imageToZipBtn.addEventListener('click', getSelectedImages); created this for testing purposes, can be discarded
 });
 
 // IMPROVEMENTS FROM CHATGPT
 // Additional Considerations:
 // Debounce Button Clicks: If the buttons (fetchDataBtn, fetchJoinDataBtn, etc.) are pressed multiple times quickly, it might lead to unnecessary fetch requests. Consider debouncing the button clicks to avoid redundant calls.
+// Learn more about Debouncing
 // CSS Styling for Selected State: Ensure you have styles defined for the .selected class so that users can clearly see which images are selected. You could use styles like a border, opacity change, or background color to highlight selected images.
