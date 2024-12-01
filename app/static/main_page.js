@@ -1,5 +1,3 @@
-import JSZip from "jszip";
-
 document.addEventListener('DOMContentLoaded', () => {
     // Containers
     const dataContainer = document.getElementById('dataContainer');
@@ -9,12 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Buttons
     const fetchDataBtn = document.getElementById('fetchDataBtn');
     const fetchJoinDataBtn = document.getElementById('joinDataBtn');
-    const createZipBtn = document.getElementById('createZipBtn')
     const downloadZipBtn = document.getElementById('downloadZipBtn');
     const fetchAnnotationsBtn = document.getElementById('fetchAnnotationsBtn');
     const displayImagesBtn = document.getElementById('displayImagesBtn'); // image display
     const selectDeselectAllBtn = document.getElementById('selectDeselect'); // select/deselect all images button (new)
-    const imageToZipBtn = document.getElementById('imageToZipBtn');
+    // const imageToZipBtn = document.getElementById('imageToZipBtn');
     // Global variable
     let displayedData = null;
     
