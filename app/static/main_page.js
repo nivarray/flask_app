@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (imageData.length > 0) {
+        if (Array.isArray(imageData) && imageData.length > 0) {
             // Add image to ZIP file, give each image a unique name (I want to explicitly name it whatever the user chooses later)
             imageData.forEach((image, index) => {
                 zip.file(`image_${index + 1}.jpg`, image);
