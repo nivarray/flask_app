@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Generate the ZIP file and trigger the download
         zip.generateAsync({ type: 'blob' }).then(function (content) {
-            FileSaver.saveAs(content, 'download.zip');
+            saveAs(content, 'download.zip');
         });
 
         return zip;
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchAnnotationsBtn.addEventListener('click', (event) => handleFetchData(event, endpoints.getAnnotations));
     displayImagesBtn.addEventListener('click', (event) => handleFetchImages(event, endpoints.fetchImages));
     selectDeselectAllBtn.addEventListener('click', toggleSelectAll);
-    imageToZipBtn.addEventListener('click', handleDataDownload); //created this for testing purposes, can be discarded
+    downloadZipBtn.addEventListener('click', handleDataDownload); //created this for testing purposes, can be discarded
 });
 
 // IMPROVEMENTS FROM CHATGPT
