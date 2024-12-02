@@ -80,7 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(endpoint, {
                 method: 'POST', // This means that the request should use the POST method (Sends data to server)
-                headers: { 'Content-Type': 'application/json' }, // Informs server that the request contains JSON data
+                headers: { 
+                    'Content-Type': 'application/json' 
+                }, 
+                // Informs server that the request contains JSON data
                 body: JSON.stringify({ pollen_name: selectedPollen }) // Send as JSON
             });
 
@@ -215,18 +218,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const imageData = await imageToBlob(); // Contains images in blob format
         const zip = new JSZip();
 
-        if (imageData.length !== 0 && selectedAnnotationData.length !== 0) {
+        if (!imageData && !annotationDataBlob) {
+            console.error("No valid data to download");
+            return;
+        }
+
+        if (imageData.length > 0) {
             // Add image to ZIP file, give each image a unique name (I want to explicitly name it whatever the user chooses later)
             imageData.forEach((image, index) => {
                 zip.file(`image_${index + 1}.jpg`, image);
             });
-            // Add annotation data, saved in json format since it is commonly used
-            zip.file('annotations.json', annotationDataBlob);
-
-            // Generate the ZIP file and trigger the download
         }
 
+        if (annotationDataBlob.size > 0) {
+            // Add annotation data, saved in json format since it is commonly used
+            zip.file('annotations.json', annotationDataBlob);
+        }
 
+        // Generate the ZIP file and trigger the download
+        zip.generateAsync({ type: 'blob' }).then(function (content) {
+            FileSaver.saveAs(content, 'download.zip');
+        });
+
+        return zip;
     }
 
     // Event listeners using the reusable function above
@@ -235,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchAnnotationsBtn.addEventListener('click', (event) => handleFetchData(event, endpoints.getAnnotations));
     displayImagesBtn.addEventListener('click', (event) => handleFetchImages(event, endpoints.fetchImages));
     selectDeselectAllBtn.addEventListener('click', toggleSelectAll);
-    // imageToZipBtn.addEventListener('click', getSelectedImages); created this for testing purposes, can be discarded
+    imageToZipBtn.addEventListener('click', handleDataDownload); //created this for testing purposes, can be discarded
 });
 
 // IMPROVEMENTS FROM CHATGPT
