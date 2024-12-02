@@ -178,11 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-    // might have to re do the below function.
-    // name it convertToBlob and have it handle both tabular data and image data.
-    // right now i am just turning image data into blob, not knowing that tabular 
-    // data needs to be turned into blob format as well
-    // UPDATE: I have decided to create two separate functions to deal with each data type (image data, tabular data)
 
     // Converts images to blob types 
     async function imageToBlob() {
