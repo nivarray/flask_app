@@ -28,7 +28,7 @@ def index():
 @main_bp.route('/fetch_data', methods=['GET','POST'])
 def fetch_data():
     selected_pollen = request.json.get('pollen_name')
-    print(f"Selected pollen: {selected_pollen}")  # Log the selected pollen
+    # print(f"Selected pollen: {selected_pollen}")  # Log the selected pollen
     db = get_db()
     if db is None:
         return jsonify({"error": "Database connection failed"}), 500
