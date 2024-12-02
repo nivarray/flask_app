@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // data needs to be turned into blob format as well
     // UPDATE: I have decided to create two separate functions to deal with each data type (image data, tabular data)
 
-    // Stores user selected images (FOR ZIP DOWNLOAD FUNCTIONALITY)
+    // Converts images to blob types 
     async function imageToBlob() {
         const selectedImages = document.querySelectorAll('#imageContainer img.selected');
         const blobs = [] // declare variables with either let or const, do not forget
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return blobs;
     
     }
-
+    // Converts tabular data to blob types
     async function annotationDataToBlob() {
         const selectedAnnotationData = displayedData;
 
@@ -214,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // Handles zip and download of all data 
     async function handleDataDownload() {
         const annotationDataBlob = await annotationDataToBlob();
         const imageData = await imageToBlob(); // Contains images in blob format
