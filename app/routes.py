@@ -2,7 +2,7 @@
 Contains routes and handles HTTP requests
 Retrieves data from DB, passes to the templates
 """
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, current_app, abort
 from .db import get_db
 import os
 
@@ -10,13 +10,16 @@ import os
 main_bp = Blueprint('main', __name__)
 
 
-"""Gets pollen names from the pollens table, sends to index.html"""
-# Alternative function name: pollen_list() or dropdown_list()
-@main_bp.route('/', methods=['GET'])
-def index():
-    db = get_db()  # Gets DB connection
+def get_db_connection():
+    db = get_db()
     if db is None:
-        return jsonify({"error": "Database connection failed"}), 500
+        abort(500, description="Database connection failed")
+    return db
+
+"""Gets pollen names from the pollens table, sends to index.html"""
+@main_bp.route('/', methods=['GET'])
+def get_pollen_name():
+    db = get_db_connection() # Establishes DB connection, handles conn errors
     
     # Gets the pollen names from the pollens table
     pollen_names = [row['name'] for row in db.execute("SELECT name FROM pollens").fetchall()]  # index.html uses this variable
@@ -29,9 +32,7 @@ def index():
 def fetch_data():
     selected_pollen = request.json.get('pollen_name')
     # print(f"Selected pollen: {selected_pollen}")  # Log the selected pollen
-    db = get_db()
-    if db is None:
-        return jsonify({"error": "Database connection failed"}), 500
+    db = get_db_connection() # Establishes DB connection, handles conn errors
     
     rows = db.execute('SELECT * FROM pollens WHERE name = ?', (selected_pollen,)).fetchall()
     print(f"Fetched rows: {[dict(row) for row in rows]}")  # Log fetched rows
@@ -46,9 +47,7 @@ def fetch_data():
 @main_bp.route('/get_related_data', methods=['GET', 'POST'])
 def get_related_data_join():
     selected_pollen = request.json.get('pollen_name')
-    db = get_db()
-    if db is None:
-        return jsonify({"error": "Database connection failed"}), 500
+    db = get_db_connection() # Establishes DB connection, handles conn errors
     
     rows = db.execute("SELECT * FROM pollens p JOIN related_data rd ON p.id = rd.pollen_id WHERE p.name= ?;", (selected_pollen,)).fetchall()
 
@@ -59,9 +58,7 @@ def get_related_data_join():
 @main_bp.route('/get_annotations', methods=['GET', 'POST'])
 def get_annotations():
     selected_pollen = request.json.get('pollen_name')
-    db = get_db()
-    if db is None:
-        return jsonify({"error": "Database connection failed"}), 500
+    db = get_db_connection() # Establishes DB connection, handles conn errors
     
     rows = db.execute("SELECT a.annotation_text FROM pollens p JOIN annotations a ON p.id=a.pollen_id WHERE p.name= ?;", (selected_pollen,)).fetchall()
 
