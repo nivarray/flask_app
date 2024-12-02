@@ -9,7 +9,7 @@ import os
 # 'main' is the blueprint name, __name__ helps Flask locate resources
 main_bp = Blueprint('main', __name__)
 
-
+# Establishes connection, handles connection errors, reused in other functions
 def get_db_connection():
     db = get_db()
     if db is None:
