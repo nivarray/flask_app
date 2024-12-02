@@ -9,12 +9,14 @@ import os
 # 'main' is the blueprint name, __name__ helps Flask locate resources
 main_bp = Blueprint('main', __name__)
 
+
 # Establishes connection, handles connection errors, reused in other functions
 def get_db_connection():
     db = get_db()
     if db is None:
         abort(500, description="Database connection failed")
     return db
+
 
 """Gets pollen names from the pollens table, sends to index.html"""
 @main_bp.route('/', methods=['GET'])

@@ -25,32 +25,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Table structure for all data being fetched (REUSED)
-    function generateTableHTML(data){
-        const selectedPollen = pollenDropdown.value.charAt(0).toUpperCase() + 
-            pollenDropdown.value.slice(1); // Capitalizes the first letter of pollen name
+    // // Table structure for all data being fetched (REUSED)
+    // function generateTableHTML(data){
+    //     const selectedPollen = pollenDropdown.value.charAt(0).toUpperCase() + 
+    //         pollenDropdown.value.slice(1); // Capitalizes the first letter of pollen name
 
-        return `<h2>Query Results For ${selectedPollen}</h2><table><thead><tr>` + 
-                Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
-                '</tr></thead><tbody>' + data.map(row => '<tr>' + 
-                Object.values(row).map(item => `<td>${item}</td>`).join('') + 
-                '</tr>').join('') + '</tbody></table>';
-    }
+    //     return `<h2>Query Results For ${selectedPollen}</h2><table><thead><tr>` + 
+    //             Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
+    //             '</tr></thead><tbody>' + data.map(row => '<tr>' + 
+    //             Object.values(row).map(item => `<td>${item}</td>`).join('') + 
+    //             '</tr>').join('') + '</tbody></table>';
+    // }
 
     // CHATGPT'S ALTERNATIVE TO THE ABOVE TABLE FORMAT IN HTML, CHECK WHICH IS BETTER!!!!!!!!!
-    // function generateTableHTML(data) {
-    //     const selectedPollen = pollenDropdown.value.charAt(0).toUpperCase() + pollenDropdown.value.slice(1);
+    function generateTableHTML(data) {
+        const selectedPollen = pollenDropdown.value.charAt(0).toUpperCase() + pollenDropdown.value.slice(1);
     
-    //     let tableHTML = `<h2>Query Results For ${selectedPollen}</h2><table><thead><tr>`;
-    //     tableHTML += Object.keys(data[0]).map(key => `<th>${key}</th>`).join('');
-    //     tableHTML += '</tr></thead><tbody>';
-    //     tableHTML += data.map(row => 
-    //         '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>'
-    //     ).join('');
-    //     tableHTML += '</tbody></table>';
+        let tableHTML = `<h2>Query Results For ${selectedPollen}</h2><table><thead><tr>`;
+        tableHTML += Object.keys(data[0]).map(key => `<th>${key}</th>`).join('');
+        tableHTML += '</tr></thead><tbody>';
+        tableHTML += data.map(row => 
+            '<tr>' + Object.values(row).map(item => `<td>${item}</td>`).join('') + '</tr>'
+        ).join('');
+        tableHTML += '</tbody></table>';
     
-    //     return tableHTML;
-    // }
+        return tableHTML;
+    }
     
     // Requests for DB data
     async function fetchData(endpoint, selectedPollen) {
