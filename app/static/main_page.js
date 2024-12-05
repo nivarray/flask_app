@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("No valid data to download");
             return;
         }
-
+        // think about adding a random string to the image names
         if (Array.isArray(imageData) && imageData.length > 0) {
             // Add image to ZIP file, give each image a unique name (I want to explicitly name it whatever the user chooses later)
             imageData.forEach((image, index) => {
