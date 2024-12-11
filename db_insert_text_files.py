@@ -13,7 +13,7 @@ def insert_into_annotations_table(db_name):
 
     # open directory, read each file one by one
 
-    for filename in os.listdir(dir_path):
+    for filename in sorted(os.listdir(dir_path)):
         if filename.endswith(".txt"):
             full_path = os.path.join(dir_path, filename)
 

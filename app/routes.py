@@ -62,7 +62,8 @@ def get_annotations():
     selected_pollen = request.json.get('pollen_name')
     db = get_db_connection() # Establishes DB connection, handles conn errors
     
-    rows = db.execute("SELECT a.annotation_text FROM pollens p JOIN annotations a ON p.id=a.pollen_id WHERE p.name= ?;", (selected_pollen,)).fetchall()
+    rows = db.execute("SELECT image_id, Xmid, Ymid, width, height FROM annotations a JOIN pollens p ON a.pollen_id=p.id WHERE p.name=? ORDER BY a.image_id;", (selected_pollen,)).fetchall()
+    #rows = db.execute("SELECT a.annotation_text FROM pollens p JOIN annotations a ON p.id=a.pollen_id WHERE p.name= ?;", (selected_pollen,)).fetchall()
 
     return jsonify([dict(row) for row in rows])
 
@@ -82,7 +83,7 @@ def fetch_images():
         return jsonify({"error": f"No images found for the selected pollen: {selected_pollen}"}), 400
     
     # Loop through all files in the selected pollen
-    for filename in os.listdir(pollen_dir):
+    for filename in sorted(os.listdir(pollen_dir)):
         if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
             # Construct the file path relative to the 'static' folder
             file_path = url_for('static', filename=f'img/{selected_pollen.lower()}/{filename}')
