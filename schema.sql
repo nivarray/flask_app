@@ -39,7 +39,8 @@ END;
 CREATE TABLE IF NOT EXISTS images(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     original_image_name TEXT,
-    image_path TEXT
+    image_path TEXT,
+    pollen_name TEXT
 );
 
 -- Table for other data

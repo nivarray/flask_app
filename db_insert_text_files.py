@@ -8,8 +8,10 @@ def insert_into_annotations_table(db_name):
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 
+    #Create a for loop to go through each annotation_text_files sub folder to then be used in the dir_path variable below
+
     #provide directory path
-    dir_path = 'app/static/annotation_text_files'
+    dir_path = 'app/static/annotation_text_files/'
 
     # open directory, read each file one by one
 
