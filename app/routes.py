@@ -68,10 +68,10 @@ def get_annotations():
     return jsonify([dict(row) for row in rows])
 
 
-"""Grabs iamges from the static/img/ directory and sends to the front end"""
+"""Grabs images from the static/img/ directory and sends to the front end"""
 @main_bp.route('/fetch_images', methods=['GET', 'POST'])
 def fetch_images():
-    selected_pollen = request.json.get("pollen_name")
+    selected_pollen = request.json.get('pollen_name')
 
     # Base directory where 'img' folder is located
     img_folder = os.path.join(current_app.static_folder, "img")

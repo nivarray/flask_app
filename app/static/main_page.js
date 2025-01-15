@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const imagePaths = await response.json();
             
             // console.log for testing purposes
-            // console.log(`This is the imagePaths array: ${imagePaths}`)
+            console.log(`This is the imagePaths array: ${imagePaths}`)
 
             // Ensure the response is an array of strings (paths)
             if (Array.isArray(imagePaths)) {

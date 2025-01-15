@@ -4,6 +4,7 @@ SQL tables, sample data is in data.sql for testing purposes
 -- Table for Pollen data 
 CREATE TABLE IF NOT EXISTS pollens(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pollen_id INTEGER,
     `name` TEXT NOT NULL,
     `description` TEXT,
     season TEXT,
@@ -38,6 +39,7 @@ END;
 -- Table for image paths
 CREATE TABLE IF NOT EXISTS images(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pollen_id INTEGER,
     original_image_name TEXT,
     image_path TEXT,
     pollen_name TEXT
