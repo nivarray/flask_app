@@ -77,17 +77,26 @@ def fetch_images():
     img_folder = os.path.join(current_app.static_folder, "img")
     matching_imgs = []
 
-    # Check if the directory corresponding to the selected pollen exists
-    pollen_dir = os.path.join(img_folder, selected_pollen.lower())
-    if not os.path.isdir(pollen_dir):
-        return jsonify({"error": f"No images found for the selected pollen: {selected_pollen}"}), 400
+    # Check if the base directory exists
+    if not os.path.isdir(img_folder):
+        return jsonify({"error": "The base image directory does not exist"}), 400
+
+    # Normalize selected_pollen for comparison
+    normalized_selected_pollen = selected_pollen.lower().strip()
     
-    # Loop through all files in the selected pollen
-    for filename in sorted(os.listdir(pollen_dir)):
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-            # Construct the file path relative to the 'static' folder
-            file_path = url_for('static', filename=f'img/{selected_pollen.lower()}/{filename}')
-            matching_imgs.append(file_path)
+    # Loop through all subdirectories and their files
+    for root, _, files in os.walk(img_folder):
+        # Normalize the current directory name
+        current_dir_name = os.path.basename(root).lower().strip()
+
+        # Check if the normalized directory name matches the selected pollen
+        if current_dir_name == normalized_selected_pollen:
+            for filename in sorted(files):
+                if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+                    # Construct the file path relative to the 'static' folder
+                    relative_path = os.path.relpath(os.path.join(root, filename), current_app.static_folder)
+                    file_path = url_for('static', filename=relative_path)
+                    matching_imgs.append(file_path)
 
     # Return the images found or an appropriate message if none found
     if not matching_imgs:
