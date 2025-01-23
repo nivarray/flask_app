@@ -25,19 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // // Table structure for all data being fetched (REUSED)
-    // function generateTableHTML(data){
-    //     const selectedPollen = pollenDropdown.value.charAt(0).toUpperCase() + 
-    //         pollenDropdown.value.slice(1); // Capitalizes the first letter of pollen name
-
-    //     return `<h2>Query Results For ${selectedPollen}</h2><table><thead><tr>` + 
-    //             Object.keys(data[0]).map(key => `<th>${key}</th>`).join('') + 
-    //             '</tr></thead><tbody>' + data.map(row => '<tr>' + 
-    //             Object.values(row).map(item => `<td>${item}</td>`).join('') + 
-    //             '</tr>').join('') + '</tbody></table>';
-    // }
-
-    // CHATGPT'S ALTERNATIVE TO THE ABOVE TABLE FORMAT IN HTML, CHECK WHICH IS BETTER!!!!!!!!!
     function generateTableHTML(data) {
         const selectedPollen = pollenDropdown.value.charAt(0).toUpperCase() + pollenDropdown.value.slice(1);
     
@@ -251,9 +238,3 @@ document.addEventListener('DOMContentLoaded', () => {
     selectDeselectAllBtn.addEventListener('click', toggleSelectAll);
     downloadZipBtn.addEventListener('click', handleDataDownload); //created this for testing purposes, can be discarded
 });
-
-// IMPROVEMENTS FROM CHATGPT
-// Additional Considerations:
-// Debounce Button Clicks: If the buttons (fetchDataBtn, fetchJoinDataBtn, etc.) are pressed multiple times quickly, it might lead to unnecessary fetch requests. Consider debouncing the button clicks to avoid redundant calls.
-// Learn more about Debouncing
-// CSS Styling for Selected State: Ensure you have styles defined for the .selected class so that users can clearly see which images are selected. You could use styles like a border, opacity change, or background color to highlight selected images.
