@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Table display 
     function generateTableHTML(data) {
         const selectedPollen = pollenDropdown.value.charAt(0).toUpperCase() + pollenDropdown.value.slice(1);
     
@@ -168,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-
     // Converts images to blob types 
     async function imageToBlob() {
         const selectedImages = document.querySelectorAll('#imageContainer img.selected');
@@ -185,6 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return blobs;
     
     }
+
     // Converts tabular data to blob types
     async function annotationDataToBlob() {
         const selectedAnnotationData = displayedData;
@@ -197,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // only works for fetching data from URLs or flask endpoints --> const dataToBlob = await fetch (selectAnnotationData).then( res => res.blob() );
         return dataToBlob;
     }
-
 
     // Handles zip and download of all data 
     async function handleDataDownload() {
